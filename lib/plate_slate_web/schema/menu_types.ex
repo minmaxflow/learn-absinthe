@@ -2,6 +2,7 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
   use Absinthe.Schema.Notation
 
   alias PlateSlateWeb.Resolvers
+  alias PlateSlate.Menu.{Item, Category}
 
   @desc "Filtering options for the menu item list"
   input_object :menu_item_filter do
@@ -31,16 +32,51 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
 
   @desc "object menu item"
   object :menu_item do
+    interfaces([:search_result])
+
     @desc "id"
     field(:id, :id)
 
     @desc "name"
-    field(:name, non_null(:string))
+    field(:name, :string)
+    # non_null会和 interface :search_result 类型不一致
+    # field(:name, non_null(:string)) 
 
     @desc "description"
     field(:description, :string)
 
     field(:added_on, :date)
+  end
+
+  object :category do
+    interfaces([:search_result])
+
+    field(:name, :string)
+    field(:description, :string)
+
+    field :items, list_of(:menu_item) do
+      resolve(&Resolvers.Menu.item_for_category/3)
+    end
+  end
+
+  union :search_result_old do
+    types([:menu_item, :category])
+
+    resolve_type(fn
+      %Item{}, _ -> :menu_item
+      %Category{}, _ -> :category
+      _, _ -> nil
+    end)
+  end
+
+  interface :search_result do
+    field(:name, :string)
+
+    resolve_type(fn
+      %Item{}, _ -> :menu_item
+      %Category{}, _ -> :category
+      _, _ -> nil
+    end)
   end
 
   object :menu_queries do
@@ -52,6 +88,11 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
       arg(:order, type: :sort_order, default_value: :asc)
 
       resolve(&Resolvers.Menu.menu_items/3)
+    end
+
+    field :search, list_of(:search_result) do
+      arg(:matching, non_null(:string))
+      resolve(&Resolvers.Menu.search/3)
     end
   end
 end

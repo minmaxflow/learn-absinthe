@@ -36,6 +36,8 @@ defmodule PlateSlateWeb.Schema do
     @desc "Matching a category name"
     field(:category, :string)
 
+    # field :category, non_null(:string)
+
     @desc "Matching a tag"
     field(:tag, :string)
 
@@ -52,7 +54,7 @@ defmodule PlateSlateWeb.Schema do
     field(:id, :id)
 
     @desc "name"
-    field(:name, :string)
+    field(:name, non_null(:string))
 
     @desc "description"
     field(:description, :string)

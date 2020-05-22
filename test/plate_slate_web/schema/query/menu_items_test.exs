@@ -53,7 +53,7 @@ defmodule PlateSlateWeb.Schema.Query.MenuItemTest do
 
     assert %{
              "errors" => [
-               %{"message" => message}
+               %{"message" => _}
              ]
            } = json_response(conn, 400)
   end
@@ -146,5 +146,50 @@ defmodule PlateSlateWeb.Schema.Query.MenuItemTest do
     assert %{
              "data" => %{"menuItems" => [%{"name" => "Vada Pav"}]}
            } == json_response(conn, 200)
+  end
+
+  @query """
+  query ($filter: MenuItemFilter!) {
+    menuItems(filter: $filter) {
+      name
+      addedOn
+    }
+  }
+  """
+  @variables %{"filter" => %{"addedBefore" => "2017-01-20"}}
+  test "menuItems filterd by custom scalar", %{conn: conn} do
+    %PlateSlate.Menu.Item{
+      name: "Garlic Fries",
+      added_on: ~D[2017-01-01],
+      price: 2.50
+    }
+    |> PlateSlate.Repo.insert!()
+
+    conn = get(conn, "/api", query: @query, variables: @variables)
+
+    assert %{
+             "data" => %{
+               "menuItems" => [%{"name" => "Garlic Fries", "addedOn" => "2017-01-01"}]
+             }
+           } == json_response(conn, 200)
+  end
+
+  @query """
+  query ($filter: MenuItemFilter!) {
+    menuItems(filter: $filter) {
+      name
+      addedOn
+    }
+  }
+  """
+  @variables %{"filter" => %{"addedBefore" => "not a date"}}
+  test "menuItems filterd by custom scalar with error", %{conn: conn} do
+    conn = get(conn, "/api", query: @query, variables: @variables)
+
+    assert %{
+             "errors" => [
+               %{"message" => _}
+             ]
+           } = json_response(conn, 400)
   end
 end

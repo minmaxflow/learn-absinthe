@@ -15,6 +15,10 @@ defmodule PlateSlateWeb.Schema do
     import_fields(:menu_queries)
   end
 
+  mutation do
+    import_fields(:menu_mutations)
+  end
+
   enum :sort_order do
     value(:asc)
     value(:desc)
@@ -38,5 +42,17 @@ defmodule PlateSlateWeb.Schema do
     serialize(fn date ->
       Date.to_iso8601(date)
     end)
+  end
+
+  scalar :decimal do
+    parse(fn
+      %{value: value}, _ ->
+        Decimal.parse(value)
+
+      _, _ ->
+        :error
+    end)
+
+    serialize(&to_string/1)
   end
 end

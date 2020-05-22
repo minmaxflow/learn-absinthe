@@ -30,6 +30,13 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
     field(:added_after, :date)
   end
 
+  input_object :menu_item_input do
+    field(:name, non_null(:string))
+    field(:description, :string)
+    field(:price, non_null(:decimal))
+    field(:category_id, non_null(:id))
+  end
+
   @desc "object menu item"
   object :menu_item do
     interfaces([:search_result])
@@ -44,6 +51,8 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
 
     @desc "description"
     field(:description, :string)
+
+    field(:price, :decimal)
 
     field(:added_on, :date)
   end
@@ -93,6 +102,13 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
     field :search, list_of(:search_result) do
       arg(:matching, non_null(:string))
       resolve(&Resolvers.Menu.search/3)
+    end
+  end
+
+  object :menu_mutations do
+    field :create_menu_item, :menu_item do
+      arg(:input, non_null(:menu_item_input))
+      resolve(&Resolvers.Menu.create_item/3)
     end
   end
 end

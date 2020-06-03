@@ -1,7 +1,7 @@
 defmodule PlateSlateWeb.Schema.Mutation.CreateMenuTest do
   use PlateSlateWeb.ConnCase, async: true
 
-  alias PlateSlate.{Repo, Menu}
+  alias PlateSlate.{Repo, Menu, Item}
   import Ecto.Query
 
   setup do
@@ -25,6 +25,7 @@ defmodule PlateSlateWeb.Schema.Mutation.CreateMenuTest do
     }
   }
   """
+
   test "createMenuItem field creates an item", %{conn: conn, category_id: category_id} do
     menu_item = %{
       "name" => "French Dip",
@@ -48,5 +49,31 @@ defmodule PlateSlateWeb.Schema.Mutation.CreateMenuTest do
                }
              }
            }
+  end
+
+  test "creating a menu item with an existing name fails",
+       %{conn: conn, category_id: category_id} do
+    menu_item = %{
+      "name" => "Reuben",
+      "description" => "Roast beef, caramelized onions, horseradish, ...",
+      "price" => "5.75",
+      "categoryId" => category_id
+    }
+
+    conn =
+      post(conn, "/api",
+        query: @query,
+        variables: %{"menuItem" => menu_item}
+      )
+
+    assert %{
+             "data" => %{"menuItem" => nil},
+             "errors" => [
+               %{
+                 "message" => "Could not create menu item",
+                 "path" => ["menuItem"]
+               }
+             ]
+           } = json_response(conn, 200)
   end
 end

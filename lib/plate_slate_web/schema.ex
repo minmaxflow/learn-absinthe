@@ -44,6 +44,7 @@ defmodule PlateSlateWeb.Schema do
     end)
   end
 
+  # 看样子，定义scalar的parse是有可以有1个或者2个参数的方法
   scalar :decimal do
     parse(fn
       %{value: value}, _ ->

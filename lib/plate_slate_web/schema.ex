@@ -10,6 +10,7 @@ defmodule PlateSlateWeb.Schema do
   use Absinthe.Schema
 
   import_types(__MODULE__.MenuTypes)
+  import_types(__MODULE__.OrderingTypes)
 
   query do
     import_fields(:menu_queries)
@@ -17,6 +18,23 @@ defmodule PlateSlateWeb.Schema do
 
   mutation do
     import_fields(:menu_mutations)
+    import_fields(:order_mutations)
+  end
+
+  subscription do
+    # 不行，不知道原因
+    # import_field(:order_subscription)
+
+    field :new_order, :order do
+      config(fn _args, _info ->
+        {:ok, topic: "*"}
+      end)
+
+      resolve(fn root, _, _ ->
+        IO.inspect(root)
+        {:ok, root}
+      end)
+    end
   end
 
   enum :sort_order do

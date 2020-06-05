@@ -11,6 +11,7 @@ defmodule PlateSlateWeb.Schema do
 
   import_types(__MODULE__.MenuTypes)
   import_types(__MODULE__.OrderingTypes)
+  import_types(__MODULE__.AccountsType)
 
   alias PlateSlate.Ordering.Order
 
@@ -38,6 +39,7 @@ defmodule PlateSlateWeb.Schema do
   mutation do
     import_fields(:menu_mutations)
     import_fields(:order_mutations)
+    import_fields(:account_mutation)
   end
 
   subscription do

@@ -12,7 +12,7 @@ defmodule PlateSlateWeb.Context do
   end
 
   defp build_context(conn) do
-    with ["Bearer" <> token] <- get_req_header(conn, "authorization"),
+    with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
          {:ok, data} <- PlateSlateWeb.Authentication.verify(token),
          %{} = user <- get_user(data) do
       %{current_user: user}

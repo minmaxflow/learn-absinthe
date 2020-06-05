@@ -47,7 +47,7 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
     @desc "name"
     field(:name, :string)
     # non_null会和 interface :search_result 类型不一致
-    # field(:name, non_null(:string)) 
+    # field(:name, non_null(:string))
 
     @desc "description"
     field(:description, :string)
@@ -55,6 +55,13 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
     field(:price, :decimal)
 
     field(:added_on, :date)
+
+    field(:allergy_info, list_of(:allergy_info))
+  end
+
+  object :allergy_info do
+    field(:allergen, :string)
+    field(:severity, :string)
   end
 
   object :category do

@@ -70,11 +70,10 @@ defmodule PlateSlateWeb.Schema.Mutation.CreateMenuTest do
              "data" => %{"menuItem" => nil},
              "errors" => [
                %{
-                 "message" => "Could not create menu item",
                  "details" => %{"name" => ["has already been taken"]},
                  "path" => ["menuItem"]
                }
              ]
-           } = json_response(conn, 200)
+           } = json_response(conn, 200) |> IO.inspect()
   end
 end

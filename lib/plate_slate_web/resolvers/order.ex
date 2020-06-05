@@ -8,7 +8,7 @@ defmodule PlateSlateWeb.Resolvers.Ordering do
         {:ok, order}
 
       {:error, changeset} ->
-        {:error, message: "Could not place order", details: error_details(changeset)}
+        {:error, changeset}
     end
   end
 
@@ -19,7 +19,7 @@ defmodule PlateSlateWeb.Resolvers.Ordering do
       {:ok, order}
     else
       {:error, changeset} ->
-        {:error, message: "ready order failed", details: error_details(changeset)}
+        {:error, changeset}
     end
   end
 
@@ -30,12 +30,7 @@ defmodule PlateSlateWeb.Resolvers.Ordering do
       {:ok, order}
     else
       {:error, changeset} ->
-        {:error, message: "complete order failed", details: error_details(changeset)}
+        {:error, changeset}
     end
-  end
-
-  def error_details(changeset) do
-    changeset
-    |> Ecto.Changeset.traverse_errors(fn {msg, _} -> msg end)
   end
 end

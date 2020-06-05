@@ -12,6 +12,8 @@ defmodule PlateSlateWeb.Schema do
   import_types(__MODULE__.MenuTypes)
   import_types(__MODULE__.OrderingTypes)
 
+  alias PlateSlate.Ordering.Order
+
   query do
     import_fields(:menu_queries)
   end
@@ -25,13 +27,33 @@ defmodule PlateSlateWeb.Schema do
     # 不行，不知道原因
     # import_field(:order_subscription)
 
+    field :update_order, :order do
+      arg(:id, non_null(:id))
+
+      config(fn args, _info ->
+        {:ok, topic: args.id}
+      end)
+
+      trigger([:ready_order, :complete_order],
+        topic: fn
+          %Order{} = order -> [order.id]
+          _ -> []
+        end
+      )
+
+      resolve(fn %Order{} = order, _, _ ->
+        {:ok, order}
+      end)
+    end
+
+    # Other fields
+
     field :new_order, :order do
       config(fn _args, _info ->
         {:ok, topic: "*"}
       end)
 
       resolve(fn root, _, _ ->
-        IO.inspect(root)
         {:ok, root}
       end)
     end

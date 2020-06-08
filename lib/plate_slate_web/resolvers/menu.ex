@@ -12,6 +12,11 @@ defmodule PlateSlateWeb.Resolvers.Menu do
     {:ok, Repo.all(query)}
   end
 
+  def category_for_item(menu_item, _, _) do
+    query = Ecto.assoc(menu_item, :category)
+    {:ok, Repo.one(query)}
+  end
+
   def search(_, %{matching: term}, _) do
     {:ok, Menu.search(term)}
   end

@@ -45,15 +45,17 @@ defmodule PlateSlateWeb.Schema.OrderingTypes do
   end
 
   object :order_subscription do
-    field :new_order, :order do
-      config(fn _args, _info ->
-        {:ok, topic: "*"}
-      end)
+    # 放在schema里面了
 
-      resolve(fn root, _, _ ->
-        IO.inspect(root)
-        {:ok, root}
-      end)
-    end
+    # field :new_order, :order do
+    #   config(fn _args, _info ->
+    #     {:ok, topic: "*"}
+    #   end)
+
+    #   resolve(fn root, _, _ ->
+    #     IO.inspect(root)
+    #     {:ok, root}
+    #   end)
+    # end
   end
 end

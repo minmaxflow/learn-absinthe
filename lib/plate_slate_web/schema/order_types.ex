@@ -2,6 +2,7 @@ defmodule PlateSlateWeb.Schema.OrderingTypes do
   use Absinthe.Schema.Notation
 
   alias PlateSlateWeb.Resolvers
+  alias PlateSlateWeb.Schema.Middleware
 
   input_object :order_item_input do
     field(:menu_item_id, non_null(:id))
@@ -28,6 +29,7 @@ defmodule PlateSlateWeb.Schema.OrderingTypes do
   object :order_mutations do
     field :place_order, :order do
       arg(:input, non_null(:place_order_input))
+      middleware(Middleware.Authorize, :any)
       resolve(&Resolvers.Ordering.place_order/3)
     end
 

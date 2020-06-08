@@ -3,6 +3,7 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
 
   alias PlateSlateWeb.Resolvers
   alias PlateSlate.Menu.{Item, Category}
+  alias PlateSlateWeb.Schema.Middleware
 
   @desc "Filtering options for the menu item list"
   input_object :menu_item_filter do
@@ -115,6 +116,7 @@ defmodule PlateSlateWeb.Schema.MenuTypes do
   object :menu_mutations do
     field :create_menu_item, :menu_item do
       arg(:input, non_null(:menu_item_input))
+      middleware(Middleware.Authorize, "employee")
       resolve(&Resolvers.Menu.create_item/3)
     end
   end

@@ -76,8 +76,9 @@ defmodule PlateSlateWeb.Schema.Mutation.CreateMenuTest do
              "data" => %{"menuItem" => nil},
              "errors" => [
                %{
-                 "details" => %{"name" => ["has already been taken"]},
-                 "path" => ["menuItem"]
+                 "message" => "changeset errors",
+                 "path" => ["menuItem"],
+                 "details" => %{"name" => ["has already been taken"]}
                }
              ]
            } = json_response(conn, 200) |> IO.inspect()

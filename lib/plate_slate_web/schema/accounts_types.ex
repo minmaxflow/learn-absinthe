@@ -2,6 +2,7 @@ defmodule PlateSlateWeb.Schema.AccountsType do
   use Absinthe.Schema.Notation
 
   alias PlateSlateWeb.Resolvers
+  alias PlateSlateWeb.Schema.Middleware
 
   object :session do
     field(:token, :string)
@@ -33,7 +34,19 @@ defmodule PlateSlateWeb.Schema.AccountsType do
     interface(:user)
     field(:email, :string)
     field(:name, :string)
-    field(:orders, list_of(:order))
+
+    field(:orders, list_of(:order)) do
+      resolve(fn customer, _, _ ->
+        import Ecto.Query
+
+        orders =
+          PlateSlate.Ordering.Order
+          |> where(customer_id: ^customer.id)
+          |> PlateSlate.Repo.all()
+
+        {:ok, orders}
+      end)
+    end
   end
 
   object :account_mutation do
@@ -48,6 +61,11 @@ defmodule PlateSlateWeb.Schema.AccountsType do
           %{res | context: Map.put(res.context, :current_user, user)}
         end
       end)
+    end
+
+    field :me, :user do
+      middleware(Middleware.Authorize, :any)
+      resolve(&Resolvers.Accounts.me/3)
     end
   end
 end

@@ -12,6 +12,7 @@ defmodule PlateSlateWeb.Schema do
   import_types(__MODULE__.MenuTypes)
   import_types(__MODULE__.OrderingTypes)
   import_types(__MODULE__.AccountsType)
+  import_types(Absinthe.Phoenix.Types)
 
   alias PlateSlate.Ordering.Order
 

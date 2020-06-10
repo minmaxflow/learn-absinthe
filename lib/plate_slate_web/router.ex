@@ -22,8 +22,18 @@ defmodule PlateSlateWeb.Router do
     plug(PlateSlateWeb.Context)
   end
 
+  pipeline :admin_auth do
+    plug(PlateSlateWeb.AdminAuth)
+  end
+
   scope "/admin", PlateSlateWeb do
     pipe_through(:browser)
+
+    resources("/session", SessionController, only: [:new, :create, :delete], singleton: true)
+  end
+
+  scope "/admin", PlateSlateWeb do
+    pipe_through([:browser, :admin_auth])
 
     resources("/items", ItemController)
   end
